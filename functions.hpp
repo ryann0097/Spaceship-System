@@ -5,7 +5,7 @@
 #include "Voo.h"
 #include <vector>
 
-Astronauta CadastrarAstronauta(std::vector<Astronauta>astronautasLista){
+void cadastrarAstronauta(std::vector<Astronauta>astronautasLista){
 
     std::string nomeParaCadastro;
     std::string cpfParaCadastro;
@@ -63,22 +63,28 @@ Astronauta CadastrarAstronauta(std::vector<Astronauta>astronautasLista){
 
     } while (!idadeValida);
 
-    return Astronauta(nomeParaCadastro, cpfParaCadastro, idadeParaCadastro);
-
+    Astronauta astronautaCadastrado = Astronauta(nomeParaCadastro, cpfParaCadastro, idadeParaCadastro);
+    astronautasLista.push_back(astronautaCadastrado);
+    
 }
 
-Voo CadastrarVoo(std::vector<Voo>voosLista){
+void CadastrarVoo(std::vector<Voo>voosLista, short codigoDeVooParaCadastro){
+    
+    Voo novoVoo = Voo(codigoDeVooParaCadastro);
+    voosLista.push_back(novoVoo);
 
-    short codigoDeVooParaCadastro;
-    bool codigoValido = false;
-
-    do{
-
-    } while (!codigoValido);
-
+    std::cout << "\n[Cadastro de Voo]: O voo de codigo " << codigoDeVooParaCadastro << " foi cadastrado com sucesso.\n";
+    
 }
 
+void CancelarVoo(std::vector<Voo>voosLista, short codigoDeVooParaRemover){
 
+    for(const auto &voo : voosLista){
+    }
+    voosLista.push_back(novoVoo);
+    std::cout << "\n[Remocao de Voo]: O voo de codigo " << codigoDeVooParaCadastro << " foi removido com sucesso.\n";
+    
+}
 
 
 #endif
