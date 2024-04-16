@@ -1,0 +1,38 @@
+#include <iostream>
+
+namespace sc{
+
+}
+
+template <typename T>
+class array{
+public:
+
+	using value_type T;
+	using pointer = T*;
+	using reference = T&;
+	using const_reference = const T&;
+	using size_type = size_t;
+
+private:
+
+	value_type *m_data; //storage data
+	size_type m_capacity; //max capacity
+	size_type m_end; // current arra suze
+
+public:
+	array(size_type cap = 0) : m_capacity(cap);{
+		m_end = 0;
+		m\m_data = new T[m_capacity];
+	}
+
+	bool full() const{
+		return m_end = m_capacity;
+	}
+
+	void push_back(const_reference value){
+		is(full()){
+			throw std::length_error("ARRAY IS FULL, DAWG!");
+		}
+	}
+}
