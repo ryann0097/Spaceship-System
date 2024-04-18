@@ -103,6 +103,23 @@ public:
   }
 
   void clear() { m_end = 0; }
+
+  void insert(size_type pos, const_reference value){
+  	if(full()){
+  		throw std::length_error("sorry, array is full");
+  	}
+  	/*caso eu queira inserir numa posição já ocupada, verificar se a posição é menor do que o que foi
+  	  apontado por m_end. copiar os elementos pra o lado (clássico shifting) com copy_backwards
+  	*/
+
+  	if(pos < m_end){
+  		std::copy_backward(m_data+pos, m_data+m_end, m_data+m_end+1);
+  		m_end++;
+  	}
+	if(pos >= m_capacity){throw std::length_error("damn, bro. ur out of range");}
+	
+  }
+
 };
 
 }  // namespace sc
