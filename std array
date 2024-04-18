@@ -1,38 +1,147 @@
+#include <algorithm>
+#include <iomanip>
 #include <iostream>
+#include <iterator>
+#include <sstream>
+#include <stdexcept>
+#include <initializer_list>
 
-namespace sc{
+//se o mano que for receber a copia for maior do que o que for ser copiado, sussas
+// se não, segura o tranco, baiano
 
-}
+namespace sc {
 
 template <typename T>
-class array{
+class array {
 public:
-
-	using value_type T;
-	using pointer = T*;
-	using reference = T&;
-	using const_reference = const T&;
-	using size_type = size_t;
+  using value_type = T;
+  using pointer = T*;
+  using reference = T&;
+  using const_reference = const T&;
+  using const_pointer = const T*;
+  using size_type = size_t;
 
 private:
-
-	value_type *m_data; //storage data
-	size_type m_capacity; //max capacity
-	size_type m_end; // current arra suze
+  value_type* m_data = nullptr;  // storage area.
+  size_type m_capacity = 0;      // storage max capacity.
+  size_type m_end = 0;           //  current array size.
 
 public:
-	array(size_type cap = 0) : m_capacity(cap);{
-		m_end = 0;
-		m\m_data = new T[m_capacity];
-	}
+  //== [1] Special member methods.
+  /// Constructor
 
-	bool full() const{
-		return m_end = m_capacity;
-	}
+  array(size_type cap = 0) : m_capacity{ cap }, m_end{ 0 } {
+    
+    // m_capacity = cap;
+    
+    m_data = new T[m_capacity];
+    std::fill(m_data, std::next(m_data, m_capacity), value_type());
+  }
 
-	void push_back(const_reference value){
-		is(full()){
-			throw std::length_error("ARRAY IS FULL, DAWG!");
-		}
-	}
+  ~array() { delete[] m_data; }
+
+  array(const std::initializer_list<value_type>& il) { 
+  	m_capacity = il.size();
+  	m_data = new T[m_capacity];
+  	m_end = m_capacity;
+  	std::copy(il.begin(), il.end(), m_data);
+  }
+
+  array& operator=(const array &rhs){
+
+  	if(size()<rhs.size()){
+  		throw std::length_error("tf u tryin to do, lil bro? ur array is smaller than the array u
+  			                     are tryin to copy.\n");
+  	}
+  	//pego a atribuição de capacidade, ultima posição valida preenchida
+  	// preencho a capacidade atual
+  	m_capacity = rhs.m_capacity;
+  	m_end = rhs.m_end;
+  	m_data = new T(m_capacity);
+  	std::copy(rhs.m_data, rhs.m_data+rhs.m_end, m_data);
+
+  	return *this;
+  }
+
+
+
+  //== [2] Accessor methods.
+
+  [[nodiscard]] bool full() const { return m_end == m_capacity; }
+  [[nodiscard]] bool empty() const { return m_end == 0; }
+  [[nodiscard]] size_type size() const { return m_end; }
+  [[nodiscard]] size_type capacity() const { return m_capacity; }
+
+  std::string to_string() {
+    std::ostringstream oss;
+    oss << "[ ";
+    for (size_t idx = 0; idx < m_end; idx++) {
+      oss << m_data[idx] << ' ';
+    }
+    oss << "| ";
+    for (size_t idx = m_end; idx < m_capacity; idx++) {
+      oss << m_data[idx] << ' ';
+    }
+    oss << " ], size=" << size();
+    return oss.str();
+  }
+
+  //== [3] Modifier methods.
+
+  /*!
+   * Inserts a new value at the end of the array.
+   * @param value the new value to insert.
+   * @throw a std::length_error exception if the array is full.
+   */
+
+  void push_back(const_reference value) {
+    // check whether the array is full
+    if (full()) {
+      throw std::length_error("sorry, array is full");
+    }
+    m_data[m_end++] = value;
+  }
+
+  void clear() { m_end = 0; }
+};
+
+}  // namespace sc
+
+void test_header(std::string_view msg) {
+  std::cout << std::setw(12) << std::setfill('=') << "[ ";
+  std::cout << msg << " ]";
+  std::cout << std::setw(12) << std::setfill('=') << " \n";
+}
+
+//== The client (test) code begins here.
+int main(int argc, char* argv[]) {
+  {
+    test_header("push_back");
+    sc::array<int> arr(7);
+    arr.push_back(1);
+    arr.push_back(3);
+    std::cout << ">>> Array: " << arr.to_string() << "\n";
+    std::cout << "--Ok\n\n";
+  }
+  {
+    test_header("clear");
+    sc::array<int> arr(7);
+    arr.push_back(1);
+    arr.push_back(3);
+    arr.push_back(5);
+    std::cout << ">>> Original array: " << arr.to_string() << "\n";
+    arr.clear();
+    std::cout << ">>> After clear array: " << arr.to_string() << "\n";
+    arr.push_back(100);
+    std::cout << ">>> After new push back: " << arr.to_string() << "\n";
+    std::cout << "--Ok\n\n";
+  }
+  {
+    test_header("initializer list");
+    sc::array<int> arr{ 1, 2, 3, 4, 5 };
+    std::cout << ">>> Array: " << arr.to_string() << "\n";
+    std::cout << "--Ok\n\n";
+  }
+
+  return 0;
 }
